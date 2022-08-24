@@ -9,8 +9,9 @@ module Keycloak
       method = env["REQUEST_METHOD"]
       path   = env["PATH_INFO"]
       uri    = env["REQUEST_URI"]
+      token  = service.read_token(uri, env)
 
-      if service.need_authentication?(method, path, env)
+      if !token.blank? && service.need_authentication?(method, path, env)
         logger.debug("Start authentication for #{method} : #{path}")
         token         = service.read_token(uri, env)
         decoded_token = service.decode_and_verify(token)
